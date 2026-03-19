@@ -1,11 +1,11 @@
-# snipp-py
+# snipp
 
 A Python wrapper for the [Snipp API](https://api.snipp.gg).
 
 ## Installation
 
 ```bash
-pip install snipp-py
+pip install snipp
 ```
 
 Or install from source:
