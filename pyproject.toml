@@ -9,10 +9,10 @@ description = "Python API wrapper for Snipp"
 requires-python = ">=3.9"
 license = "MIT"
 readme = "README.md"
-keywords = ["snipp", "api", "upload", "file-sharing"]
+keywords = ["clips", "upload", "snipp", "images", "share", "api"]
 dependencies = ["requests"]
 
 [project.urls]
-Homepage = "https://docs.snipp.gg/concepts/sdks"
+Homepage = "https://docs.snipp.gg/sdks/python"
 Repository = "https://github.com/snipp-gg/snipp-py"
 Issues = "https://github.com/snipp-gg/snipp-py/issues"
