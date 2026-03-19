@@ -1,14 +1,18 @@
 [build-system]
 requires = ["setuptools>=61.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "snipp-py"
+name = "snipp"
 version = "1.0.0"
 description = "Python API wrapper for Snipp"
 requires-python = ">=3.9"
 license = "MIT"
+readme = "README.md"
+keywords = ["snipp", "api", "upload", "file-sharing"]
 dependencies = ["requests"]
 
 [project.urls]
-Homepage = "https://snipp.gg"
+Homepage = "https://docs.snipp.gg/concepts/sdks"
+Repository = "https://github.com/snipp-gg/snipp-py"
+Issues = "https://github.com/snipp-gg/snipp-py/issues"
