@@ -50,6 +50,10 @@ class SnippClient:
             params["postsLimit"] = posts_limit
         return self._request("GET", f"/users/{user_id}", params=params)
 
+    def get_post(self, code: str) -> dict[str, Any]:
+        """Get a post by its share code."""
+        return self._request("GET", f"/posts/{code}")
+
     def upload(
         self,
         file: Union[str, bytes, BinaryIO],
@@ -84,6 +88,32 @@ class SnippClient:
     def list_uploads(self) -> dict[str, Any]:
         """List the authenticated user's recent uploads."""
         return self._request("GET", "/uploads")
+
+    def edit_upload(
+        self,
+        code: str,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        privacy: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Edit an existing upload.
+
+        Args:
+            code: The share code of the upload to edit.
+            title: New title (max 30 chars). Empty string to clear.
+            description: New description (max 200 chars). Empty string to clear.
+            privacy: One of ``public``, ``unlisted``, or ``private``.
+        """
+        headers: dict[str, str] = {"code": code}
+        if title is not None:
+            headers["title"] = title
+        if description is not None:
+            headers["description"] = description
+        if privacy is not None:
+            if privacy not in ("public", "unlisted", "private"):
+                raise ValueError(f"Invalid privacy setting: {privacy!r}")
+            headers["postprivacy"] = privacy
+        return self._request("PATCH", "/editUpload", headers=headers)
 
     def delete_upload(self, filename: str) -> dict[str, Any]:
         """Delete an upload by filename."""
