@@ -133,7 +133,7 @@ class SnippClient:
         Args:
             target_id: The ID of the user to block.
         """
-        return self._request("POST", "/blocks", json={"targetId": target_id})
+        return self._request("POST", "/block", json={"targetId": target_id})
 
     def unblock_user(self, target_id: str) -> dict[str, Any]:
         """Unblock a user.
@@ -141,7 +141,7 @@ class SnippClient:
         Args:
             target_id: The ID of the user to unblock.
         """
-        return self._request("DELETE", "/blocks", json={"targetId": target_id})
+        return self._request("POST", "/unblock", json={"targetId": target_id})
 
     def report_post(self, code: str, reason: str = "") -> dict[str, Any]:
         """Report a post.
