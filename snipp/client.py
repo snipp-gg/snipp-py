@@ -51,7 +51,14 @@ class SnippClient:
         return self._request("GET", f"/users/{user_id}", params=params)
 
     def get_post(self, code: str) -> dict[str, Any]:
-        """Get a post by its share code."""
+        """Get a post by its share code.
+
+        Returns:
+            A dict with ``post`` containing ``code``, ``url``, ``title``,
+            ``description``, ``postPrivacy``, ``created``, and optionally
+            ``file`` (``size``, ``size_formatted``, ``mime_type``, and
+            ``dimensions`` with ``width``/``height``).
+        """
         return self._request("GET", f"/posts/{code}")
 
     def upload(
@@ -64,6 +71,12 @@ class SnippClient:
         Args:
             file: A file path (str), raw bytes, or a file-like object.
             privacy: One of ``public``, ``unlisted``, or ``private``.
+
+        Returns:
+            A dict with ``message``, ``url``, ``file`` (containing ``size``,
+            ``size_formatted``, ``mime_type``, and optionally ``dimensions``
+            with ``width``/``height``), ``processing_time`` (ms), and
+            optionally ``post`` (``code``, ``url``, ``postPrivacy``).
         """
         if privacy not in ("public", "unlisted", "private"):
             raise ValueError(f"Invalid privacy setting: {privacy!r}")
@@ -86,7 +99,12 @@ class SnippClient:
             return self._request("POST", "/upload", files=files, headers=headers)
 
     def list_uploads(self) -> dict[str, Any]:
-        """List the authenticated user's recent uploads."""
+        """List the authenticated user's recent uploads.
+
+        Returns:
+            A dict with ``uploads`` list, each containing ``url``, ``size``
+            (bytes), ``size_formatted``, and ``uploaded`` (ISO 8601).
+        """
         return self._request("GET", "/uploads")
 
     def edit_upload(
