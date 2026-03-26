@@ -81,7 +81,7 @@ class SnippClient:
         if privacy not in ("public", "unlisted", "private"):
             raise ValueError(f"Invalid privacy setting: {privacy!r}")
 
-        headers = {"postprivacy": privacy}
+        headers = {"post-privacy": privacy}
 
         if isinstance(file, str):
             filename = os.path.basename(file)
@@ -130,7 +130,7 @@ class SnippClient:
         if privacy is not None:
             if privacy not in ("public", "unlisted", "private"):
                 raise ValueError(f"Invalid privacy setting: {privacy!r}")
-            headers["postprivacy"] = privacy
+            headers["post-privacy"] = privacy
         return self._request("PATCH", "/editUpload", headers=headers)
 
     def delete_upload(self, filename: str) -> dict[str, Any]:
