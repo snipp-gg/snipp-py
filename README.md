@@ -76,7 +76,7 @@ print(result["url"])
 
 ### `list_uploads()`
 
-List the authenticated user's recent uploads.
+List the authenticated user's recent uploads. Each item includes the upload URL, size metadata, the associated post `code` when one exists, and `isAlbum` for uploads that belong to an album post.
 
 ```python
 uploads = client.list_uploads()

@@ -56,8 +56,9 @@ class SnippClient:
         Returns:
             A dict with ``post`` containing ``code``, ``url``, ``title``,
             ``description``, ``postPrivacy``, ``created``, and optionally
-            ``file`` (``size``, ``size_formatted``, ``mime_type``, and
-            ``dimensions`` with ``width``/``height``).
+            ``urls`` plus ``isAlbum`` for album posts, and ``file``
+            (``size``, ``size_formatted``, ``mime_type``, and ``dimensions``
+            with ``width``/``height``).
         """
         return self._request("GET", f"/posts/{code}")
 
@@ -102,8 +103,9 @@ class SnippClient:
         """List the authenticated user's recent uploads.
 
         Returns:
-            A dict with ``uploads`` list, each containing ``url``, ``size``
-            (bytes), ``size_formatted``, and ``uploaded`` (ISO 8601).
+            A dict with ``uploads`` list, each containing ``code``,
+            ``isAlbum``, ``url``, ``size`` (bytes), ``size_formatted``,
+            and ``uploaded`` (ISO 8601).
         """
         return self._request("GET", "/uploads")
 
