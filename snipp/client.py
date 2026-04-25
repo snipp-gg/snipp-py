@@ -135,6 +135,66 @@ class SnippClient:
             headers["post-privacy"] = privacy
         return self._request("PATCH", "/editUpload", headers=headers)
 
+    def append_upload(
+        self,
+        code: str,
+        files: list[Union[str, bytes, BinaryIO]],
+    ) -> dict[str, Any]:
+        """Append 1 or more files to an existing album post.
+
+        The post's share code, privacy, title, and description are preserved.
+        Albums cap at 9 files total; requests that would exceed the cap are
+        rejected. New files inherit the post's privacy — returned URLs are
+        signed with a 24-hour expiry for private posts.
+
+        Args:
+            code: The share code of the post to append to.
+            files: A list where each item is a file path (str), raw bytes, or
+                a file-like object.
+
+        Returns:
+            A dict with ``message``, ``post`` (``code``, ``url``,
+            ``postPrivacy``, ``fileCount``), ``files`` (list of successfully
+            added files with ``fileName``, ``url``, ``size``,
+            ``size_formatted``, ``mime_type``, ``status``, optional
+            ``dimensions``), and optionally ``failed``.
+        """
+        if not code:
+            raise ValueError("code is required")
+        if not files:
+            raise ValueError("files must be a non-empty list")
+
+        headers = {"post-code": code}
+
+        # requests' `files` param accepts a list of (field_name, value) tuples
+        # to send multiple parts under the same field name.
+        open_handles: list[BinaryIO] = []
+        try:
+            parts: list[tuple[str, tuple[str, Any]]] = []
+            for idx, file in enumerate(files):
+                if isinstance(file, str):
+                    filename = os.path.basename(file)
+                    fh = open(file, "rb")
+                    open_handles.append(fh)
+                    parts.append(("file", (filename, fh)))
+                elif isinstance(file, bytes):
+                    parts.append(("file", ("upload", file)))
+                else:
+                    name = getattr(file, "name", "upload")
+                    if isinstance(name, str):
+                        name = os.path.basename(name)
+                    parts.append(("file", (name, file)))
+
+            return self._request(
+                "POST", "/appendUpload", files=parts, headers=headers
+            )
+        finally:
+            for fh in open_handles:
+                try:
+                    fh.close()
+                except Exception:
+                    pass
+
     def delete_upload(self, filename: str) -> dict[str, Any]:
         """Delete an upload by filename."""
         return self._request("DELETE", "/deleteUpload", headers={"file": filename})
