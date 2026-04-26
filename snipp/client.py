@@ -30,7 +30,7 @@ class SnippClient:
         if resp.status_code != 200:
             try:
                 body = resp.json()
-                message = body.get("message", resp.text)
+                message = body.get("error") or body.get("message") or resp.text
             except Exception:
                 message = resp.text
             raise SnippError(resp.status_code, message)
@@ -66,12 +66,19 @@ class SnippClient:
         self,
         file: Union[str, bytes, BinaryIO],
         privacy: str = "unlisted",
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        post_type: Optional[str] = None,
     ) -> dict[str, Any]:
         """Upload a file.
 
         Args:
             file: A file path (str), raw bytes, or a file-like object.
             privacy: One of ``public``, ``unlisted``, or ``private``.
+            title: Optional post title (max 30 chars).
+            description: Optional post description (max 200 chars).
+            post_type: ``album`` (default) or ``individual``. Only applies
+                when uploading two or more files.
 
         Returns:
             A dict with ``message``, ``url``, ``file`` (containing ``size``,
@@ -81,8 +88,16 @@ class SnippClient:
         """
         if privacy not in ("public", "unlisted", "private"):
             raise ValueError(f"Invalid privacy setting: {privacy!r}")
+        if post_type is not None and post_type not in ("album", "individual"):
+            raise ValueError(f"Invalid post_type: {post_type!r}")
 
         headers = {"post-privacy": privacy}
+        if title is not None:
+            headers["post-title"] = title
+        if description is not None:
+            headers["post-description"] = description
+        if post_type is not None:
+            headers["post-type"] = post_type
 
         if isinstance(file, str):
             filename = os.path.basename(file)
