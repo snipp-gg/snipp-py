@@ -214,30 +214,6 @@ class SnippClient:
         """Delete an upload by filename."""
         return self._request("DELETE", "/deleteUpload", headers={"file": filename})
 
-    def discover(self) -> dict[str, Any]:
-        """Browse public uploads."""
-        return self._request("GET", "/discover")
-
-    def list_blocks(self) -> dict[str, Any]:
-        """List blocked users."""
-        return self._request("GET", "/blocks")
-
-    def block_user(self, target_id: str) -> dict[str, Any]:
-        """Block a user.
-
-        Args:
-            target_id: The ID of the user to block.
-        """
-        return self._request("POST", "/block", json={"targetId": target_id})
-
-    def unblock_user(self, target_id: str) -> dict[str, Any]:
-        """Unblock a user.
-
-        Args:
-            target_id: The ID of the user to unblock.
-        """
-        return self._request("POST", "/unblock", json={"targetId": target_id})
-
     def report_post(self, code: str, reason: str = "") -> dict[str, Any]:
         """Report a post.
 
