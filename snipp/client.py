@@ -114,15 +114,21 @@ class SnippClient:
             files = {"file": (name, file)}
             return self._request("POST", "/upload", files=files, headers=headers)
 
-    def list_uploads(self) -> dict[str, Any]:
+    def list_uploads(self, limit: Optional[int] = None) -> dict[str, Any]:
         """List the authenticated user's recent uploads.
+
+        Args:
+            limit: Maximum uploads to return (1-1000).
 
         Returns:
             A dict with ``uploads`` list, each containing ``code``,
             ``isAlbum``, ``url``, ``size`` (bytes), ``size_formatted``,
             and ``uploaded`` (ISO 8601).
         """
-        return self._request("GET", "/uploads")
+        params: dict[str, Any] = {}
+        if limit is not None:
+            params["limit"] = limit
+        return self._request("GET", "/uploads", params=params if params else None)
 
     def edit_upload(
         self,
