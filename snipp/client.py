@@ -92,27 +92,29 @@ class SnippClient:
             raise ValueError(f"Invalid post_type: {post_type!r}")
 
         headers = {"post-privacy": privacy}
-        if title is not None:
-            headers["post-title"] = title
-        if description is not None:
-            headers["post-description"] = description
         if post_type is not None:
             headers["post-type"] = post_type
+
+        data = {}
+        if title is not None:
+            data["post-title"] = title
+        if description is not None:
+            data["post-description"] = description
 
         if isinstance(file, str):
             filename = os.path.basename(file)
             with open(file, "rb") as fh:
                 files = {"file": (filename, fh)}
-                return self._request("POST", "/upload", files=files, headers=headers)
+                return self._request("POST", "/upload", files=files, data=data, headers=headers)
         elif isinstance(file, bytes):
             files = {"file": ("upload", file)}
-            return self._request("POST", "/upload", files=files, headers=headers)
+            return self._request("POST", "/upload", files=files, data=data, headers=headers)
         else:
             name = getattr(file, "name", "upload")
             if isinstance(name, str):
                 name = os.path.basename(name)
             files = {"file": (name, file)}
-            return self._request("POST", "/upload", files=files, headers=headers)
+            return self._request("POST", "/upload", files=files, data=data, headers=headers)
 
     def list_uploads(self, limit: Optional[int] = None) -> dict[str, Any]:
         """List the authenticated user's recent uploads.
