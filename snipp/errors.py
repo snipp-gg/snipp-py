@@ -8,15 +8,24 @@ class SnippError(Exception):
 
     Attributes:
         status: HTTP status code.
-        message: Error message from the API, or the raw response body.
-        body: Parsed JSON error body, or ``None`` when the response was not
-            JSON. Carries fields the API sends alongside ``error``, such as
-            ``suspended`` on a suspended user or ``moderated`` on a moderated
-            post.
+        type: ``error.type`` from the response, such as ``not_found`` or
+            ``quota_exceeded``, or ``None`` when the response did not carry
+            one.
+        message: ``error.message`` from the response, or the HTTP status
+            text when the response did not carry one.
+        body: Parsed JSON response body, or ``None`` when the response was
+            not JSON.
     """
 
-    def __init__(self, status: int, message: str, body: Optional[Any] = None) -> None:
+    def __init__(
+        self,
+        status: int,
+        message: str,
+        body: Optional[Any] = None,
+        type: Optional[str] = None,
+    ) -> None:
         self.status = status
+        self.type = type
         self.message = message
         self.body = body
         super().__init__(f"[{status}] {message}")
